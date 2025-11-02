@@ -696,9 +696,49 @@ button, a, .add-to-cart, .browse-btn { cursor: pointer }
 .order-summary .order-amount { font-size:1.6rem; font-weight:800; color:rgba(255,255,255,0.95); margin:8px 0 }
 .qr-area { flex:0 0 360px; display:flex; flex-direction:column; align-items:center; gap:12px }
 .qr-area img { width: 320px; height:320px; object-fit:cover; border-radius:12px; border: 8px solid rgba(255,255,255,0.03) }
-.vpa-row { display:flex; gap:10px; align-items:center }
+.vpa-row { display:flex; gap:10px; align-items:center; margin-bottom: 1rem; }
 .vpa { padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:8px; color:rgba(255,255,255,0.9) }
 .copy-btn { padding:8px 10px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer }
+
+.payment-apps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.payment-app-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-app-btn:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(2,6,23,0.2);
+}
+
+.app-icon {
+  font-size: 1.2rem;
+}
+
+/* Add hover effect for the copy button */
+.copy-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.2);
+}
 .checkout-actions { display:flex; gap:12px; justify-content:flex-end; padding:16px 22px; border-top:1px solid rgba(255,255,255,0.06) }
 .confirm-paid { background:linear-gradient(90deg,#10b981,#059669); color:white; padding:10px 16px; border-radius:10px; border:none; font-weight:700; cursor:pointer }
 .checkout-secondary { background:transparent; border:none; padding:10px 12px; border-radius:8px; cursor:pointer; color:rgba(255,255,255,0.7) }

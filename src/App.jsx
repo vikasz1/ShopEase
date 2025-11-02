@@ -259,6 +259,38 @@ function Checkout({ amount = 0, vpa = 'vikasz4@ybl', onClose, onPaid }) {
   const upiUri = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent('ShopEase')}&am=${encodeURIComponent(amount.toFixed(2))}&cu=INR&tn=${encodeURIComponent('ShopEase Order')}`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&data=${encodeURIComponent(upiUri)}`;
 
+  // Payment app deep links
+  const paymentApps = [
+    {
+      name: 'PhonePe',
+      icon: '📱',
+      link: `phonepe://pay?pa=${vpa}&pn=ShopEase&am=${amount.toFixed(2)}&cu=INR&tn=ShopEase%20Order`,
+      playStore: 'https://play.google.com/store/apps/details?id=com.phonepe.app'
+    },
+    {
+      name: 'Google Pay',
+      icon: '💳',
+      link: `tez://upi/pay?pa=${vpa}&pn=ShopEase&am=${amount.toFixed(2)}&cu=INR&tn=ShopEase%20Order`,
+      playStore: 'https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.paisa.user'
+    },
+    {
+      name: 'PayZapp',
+      icon: '💰',
+      link: `payzapp://upi/pay?pa=${vpa}&pn=ShopEase&am=${amount.toFixed(2)}&cu=INR&tn=ShopEase%20Order`,
+      playStore: 'https://play.google.com/store/apps/details?id=com.enstage.wibmo.hdfc'
+    }
+  ];
+
+  const openPaymentApp = (app) => {
+    // First try to open the app
+    window.location.href = app.link;
+    
+    // Set a timeout to redirect to Play Store if app doesn't open
+    setTimeout(() => {
+      window.location.href = app.playStore;
+    }, 1500);
+  };
+
   const copyVpa = async () => {
     try {
       await navigator.clipboard.writeText(vpa);
@@ -288,6 +320,18 @@ function Checkout({ amount = 0, vpa = 'vikasz4@ybl', onClose, onPaid }) {
             <div className="vpa-row">
               <code className="vpa">{vpa}</code>
               <button className="copy-btn" onClick={copyVpa}>Copy</button>
+            </div>
+            <div className="payment-apps">
+              {paymentApps.map(app => (
+                <button
+                  key={app.name}
+                  className="payment-app-btn"
+                  onClick={() => openPaymentApp(app)}
+                >
+                  <span className="app-icon">{app.icon}</span>
+                  {app.name}
+                </button>
+              ))}
             </div>
             <p className="small muted">UPI URI: <code style={{display:'inline'}}>{upiUri}</code></p>
           </div>
