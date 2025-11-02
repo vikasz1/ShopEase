@@ -164,7 +164,7 @@ function Navbar({ cartCount, onCartClick }) {
   );
 }
 
-function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product, onAddToCart, cartQuantity = 0 }) {
   return (
     <div className="product-card">
       <img src={product.image} alt={product.name} />
@@ -173,9 +173,29 @@ function ProductCard({ product, onAddToCart }) {
         <span className="price">${product.price}</span>
         <span className="rating">⭐ {product.rating}</span>
       </div>
-      <button className="add-to-cart" onClick={() => onAddToCart(product)}>
-        Add to Cart
-      </button>
+      {cartQuantity > 0 ? (
+        <div className="quantity-controls">
+          <button 
+            className="qty-btn decrease" 
+            onClick={() => onAddToCart(product, -1)}
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+          <span className="quantity-display">{cartQuantity}</span>
+          <button 
+            className="qty-btn increase" 
+            onClick={() => onAddToCart(product, 1)}
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
+      ) : (
+        <button className="add-to-cart" onClick={() => onAddToCart(product, 1)}>
+          Add to Cart
+        </button>
+      )}
     </div>
   );
 }
@@ -283,13 +303,21 @@ function Checkout({ amount = 0, vpa = 'vikasz4@ybl', onClose, onPaid }) {
 }
 
 export default function App() {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const saved = localStorage.getItem('shopease-cart');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [showCart, setShowCart] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const featuredRef = useRef(null);
   const [toast, setToast] = useState(null);
+
+  // Persist cart data whenever it changes
+  useEffect(() => {
+    localStorage.setItem('shopease-cart', JSON.stringify(cartItems));
+  }, [cartItems]);
   
   useEffect(() => {
     // Extract unique categories from all product categories
@@ -321,20 +349,28 @@ export default function App() {
     return matchesSearch && matchesCategories;
   });
 
-  const addToCart = (product) => {
+  const addToCart = (product, quantityChange = 1) => {
     setCartItems(items => {
       const existing = items.find(item => item.id === product.id);
       if (existing) {
+        const newQuantity = existing.quantity + quantityChange;
+        if (newQuantity <= 0) {
+          return items.filter(item => item.id !== product.id);
+        }
         return items.map(item =>
           item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: newQuantity }
             : item
         );
       }
       return [...items, { ...product, quantity: 1 }];
     });
     // show toast
-    setToast({ text: `${product.name} added to cart` });
+    if (quantityChange > 0) {
+      setToast({ text: `${product.name} added to cart` });
+    } else {
+      setToast({ text: `${product.name} removed from cart` });
+    }
     setTimeout(() => setToast(null), 1800);
   };
 
@@ -449,6 +485,7 @@ export default function App() {
                 key={product.id}
                 product={product}
                 onAddToCart={addToCart}
+                cartQuantity={cartItems.find(item => item.id === product.id)?.quantity || 0}
               />
             ))}
           </div>
