@@ -3,9 +3,17 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light;
-  color: #213547;
-  background-color: #ffffff;
+  color-scheme: dark;
+  color: #e6eef8;
+  background-color: #071026;
+
+  --bg: #071026;
+  --panel: #0f1724;
+  --muted: #94a3b8;
+  --accent: #7c3aed;
+  --accent-2: #06b6d4;
+  --glass: rgba(255,255,255,0.04);
+  --card: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -17,6 +25,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: radial-gradient(800px 400px at 10% 10%, rgba(124,92,255,0.06), transparent 6%),
+              radial-gradient(600px 300px at 90% 80%, rgba(6,182,212,0.04), transparent 10%),
+              var(--bg);
+  color: var(--color, #e6eef8);
 }
 
 button {
@@ -31,5 +43,5 @@ section > h2 {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: #1e3a8a;
+  color: #e6eef8;
 }
